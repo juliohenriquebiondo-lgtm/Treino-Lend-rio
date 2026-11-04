@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acompanhamento de Treino</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --card-bg: #202024;
+      --border: #323238;
+      --primary: #00b37e;
+      --primary-hover: #00875f;
+      --text: #e1e1e6;
+      --text-muted: #8d8d99;
+      --accent: #fba94c;
+      --danger: #f75a68;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
+    header { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 16px; text-align: center; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.25rem; font-weight: 700; }
+    .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+    .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+    .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #fff; }
+    .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: #29292e; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
+    .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+    .set-row { display: grid; grid-template-columns: 32px 1fr 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .set-row input { background: #121214; border: 1px solid var(--border); color: #fff; border-radius: 6px; padding: 8px 6px; text-align: center; font-size: 0.9rem; }
+    .set-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: bold; }
+    .check-btn { background: #29292e; border: 1px solid var(--border); border-radius: 6px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-muted); }
+    .check-btn.checked { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #29292e; }
+    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+    .info-box { background: #1b2820; border: 1px solid #005f42; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.4; }
+    .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+    .timer-display { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+    .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Acompanhamento de Treino</h1>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('treinoA')">Treino A (Push)</button>
+    <button class="tab-btn" onclick="switchTab('treinoB')">Treino B (Pull)</button>
+    <button class="tab-btn" onclick="switchTab('treinoC')">Treino C (Legs)</button>
+  </nav>
+
+  <div class="container" id="content"></div>
+
+  <div class="timer-bar" id="timerBar" style="display: none;">
+    <div>
+      <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Descanso</span>
+      <span class="timer-display" id="timeRemaining">00:00</span>
+    </div>
+    <div class="timer-controls">
+      <button onclick="addTime(30)">+30s</button>
+      <button onclick="stopTimer()" style="background: var(--danger);">Parar</button>
+    </div>
+  </div>
+
+  <script>
+    const treinos = {
+      treinoA: {
+        titulo: "Treino A - Push (Peitoral, Ombros e Tríceps)",
+        cardio: "25 a 30 min em Zona 2 (esteira inclinada 8%-12% a 5.0-5.8 km/h ou bike 70-80 RPM).",
+        exercicios: [
+          { id: "a1", nome: "1. Supino Inclinado com Halteres (30° a 45°)", series: 4, reps: "8-10", rest: 90, desc: "Cadência: 3s descida, 1s pausa embaixo, subida explosiva." },
+          { id: "a2", nome: "2. Crucifixo / Crossover nas Polias Médias", series: 3, reps: "10-12", rest: 60, desc: "Polias na altura do peito/ombro; aperte 1s no pico de contração." },
+          { id: "a3", nome: "3. Desenvolvimento com Halteres (ou Barra)", series: 3, reps: "8-10", rest: 90, desc: "Banco a 80°-85°. Amplitude completa até o queixo." },
+          { id: "a4", nome: "4. Elevação Lateral na Polia Baixa (Unilateral)", series: 3, reps: "12-15", rest: 45, desc: "Cabo por trás ou pela frente. 45s de descanso entre lados." },
+          { id: "a5", nome: "5. Tríceps Pulley com Barra Reta/V ou Corda", series: 3, reps: "10-12", rest: 60, desc: "Cotovelos fixos nas costelas, extensão total sem jogar ombros." },
+          { id: "a6", nome: "6. Tríceps Francês Unilateral na Polia Baixa", series: 3, reps: "12-15", rest: 60, desc: "Braço na vertical, puxando o cabo por trás da cabeça." }
+        ]
+      },
+      treinoB: {
+        titulo: "Treino B - Pull (Costas, Deltóide Post. e Bíceps)",
+        cardio: "25 a 30 min em Zona 2 (esteira inclinada 8%-12% a 5.0-5.8 km/h ou bike 70-80 RPM).",
+        exercicios: [
+          { id: "b1", nome: "1. Puxada Alta com Barra Longa (Pronada)", series: 4, reps: "8-10", rest: 90, desc: "Alongue bem a dorsal e puxe direcionando ao topo do esterno." },
+          { id: "b2", nome: "2. Remada Baixa com Triângulo", series: 4, reps: "8-10", rest: 90, desc: "Puxe direcionando pelos cotovelos em direção ao abdômen." },
+          { id: "b3", nome: "3. Remada Curvada com Barra Livre ou Halteres", series: 3, reps: "10-12", rest: 90, desc: "Tronco inclinado a 45°, puxe em direção ao umbigo." },
+          { id: "b4", nome: "4. Face Pull na Polia Alta com Corda", series: 3, reps: "12-15", rest: 60, desc: "Puxe até a altura dos olhos abrindo e rodando ombros externamente." },
+          { id: "b5", nome: "5. Rosca Bíceps na Polia Baixa (Barra Reta)", series: 3, reps: "10-12", rest: 60, desc: "Tensão constante, sem descansar no topo da contração." },
+          { id: "b6", nome: "6. Rosca Martelo na Polia Baixa (Corda)", series: 3, reps: "12-15", rest: 60, desc: "Foco no braquial e braquiorradial." }
+        ]
+      },
+      treinoC: {
+        titulo: "Treino C - Legs & Abdômen",
+        cardio: "15 a 20 min intensidade leve sem inclinação (recuperação ativa).",
+        exercicios: [
+          { id: "c1", nome: "1. Agachamento Livre com Barra ou Leg 45°", series: 4, reps: "8-10", rest: 120, desc: "Profundidade e estabilidade de core. 120s de descanso." },
+          { id: "c2", nome: "2. Passada / Avanço com Halteres", series: 3, reps: "10-12", rest: 60, desc: "Tronco levemente inclinado à frente. 60-90s entre pernas." },
+          { id: "c3", nome: "3. Elevação Pélvica (Barra ou Máquina)", series: 3, reps: "10-12", rest: 90, desc: "Bloqueio e contração máxima nos glúteos no ponto mais alto." },
+          { id: "c4", nome: "4. Panturrilha em Pé (Máquina ou Degrau)", series: 4, reps: "15-20", rest: 45, desc: "2s de pausa embaixo no alongamento e 1s de pico no topo." },
+          { id: "c5", nome: "5. Abdominal Crunch na Polia Alta", series: 3, reps: "15", rest: 60, desc: "Curvar a coluna usando o abdômen, sem puxar com os braços." }
+        ]
+      }
+    };
+
+    let activeTab = 'treinoA';
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    function render() {
+      const data = treinos[activeTab];
+      const container = document.getElementById('content');
+      
+      let html = `
+        <div class="info-box">
+          <strong>Diretrizes:</strong> Cadência 3s excêntrica. 1 a 2 repetições em reserva (RIR 1-2), indo até a falha técnica apenas na última série.<br><br>
+          <strong>Cardio:</strong> ${data.cardio}
+        </div>
+      `;
+
+      data.exercicios.forEach(ex => {
+        html += `
+          <div class="card">
+            <span class="badge">${ex.series} séries × ${ex.reps} reps</span>
+            <div class="card-title">${ex.nome}</div>
+            <div class="details">${ex.desc}</div>
+            <div style="display: grid; grid-template-columns: 32px 1fr 1fr 36px; gap: 8px; margin-bottom: 4px;">
+              <span class="set-label">#</span>
+              <span class="set-label">Kg</span>
+              <span class="set-label">Reps</span>
+              <span class="set-label">Ok</span>
+            </div>
+        `;
+
+        for (let i = 1; i <= ex.series; i++) {
+          const keyWeight = `${ex.id}_w_${i}`;
+          const keyReps = `${ex.id}_r_${i}`;
+          const keyCheck = `${ex.id}_c_${i}`;
+          const savedW = localStorage.getItem(keyWeight) || '';
+          const savedR = localStorage.getItem(keyReps) || '';
+          const isChecked = localStorage.getItem(keyCheck) === 'true';
+
+          html += `
+            <div class="set-row">
+              <span class="set-label">${i}</span>
+              <input type="number" placeholder="kg" value="${savedW}" onchange="saveData('${keyWeight}', this.value)">
+              <input type="number" placeholder="reps" value="${savedR}" onchange="saveData('${keyReps}', this.value)">
+              <button class="check-btn ${isChecked ? 'checked' : ''}" onclick="toggleCheck('${keyCheck}', ${ex.rest}, this)">✓</button>
+            </div>
+          `;
+        }
+
+        html += `
+            <div class="card-actions">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Descanso: ${ex.rest}s</span>
+              <button class="rest-btn" onclick="startTimer(${ex.rest})">Iniciar Descanso (${ex.rest}s)</button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      render();
+    }
+
+    function saveData(key, val) {
+      localStorage.setItem(key, val);
+    }
+
+    function toggleCheck(key, restTime, btn) {
+      const current = localStorage.getItem(key) === 'true';
+      const next = !current;
+      localStorage.setItem(key, next);
+      btn.classList.toggle('checked', next);
+      if (next) startTimer(restTime);
+    }
+
+    function startTimer(seconds) {
+      clearInterval(timerInterval);
+      timerSeconds = seconds;
+      document.getElementById('timerBar').style.display = 'flex';
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          navigator.vibrate && navigator.vibrate([200, 100, 200]);
+          stopTimer();
+        } else {
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+
+    function addTime(secs) {
+      timerSeconds += secs;
+      updateTimerUI();
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('timerBar').style.display = 'none';
+    }
+
+    function updateTimerUI() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timeRemaining').innerText = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    render();
+  </script>
+</body>
+</html>
