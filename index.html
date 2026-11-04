@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Acompanhamento de Treino</title>
   <style>
     :root {
@@ -21,20 +21,76 @@
     header { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 16px; text-align: center; position: sticky; top: 0; z-index: 10; }
     header h1 { font-size: 1.25rem; font-weight: 700; }
     .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     .container { max-width: 600px; margin: 0 auto; padding: 16px; }
     .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
     .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #fff; }
     .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: #29292e; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
     .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
-    .set-row { display: grid; grid-template-columns: 32px 1fr 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .set-row input { background: #121214; border: 1px solid var(--border); color: #fff; border-radius: 6px; padding: 8px 6px; text-align: center; font-size: 0.9rem; }
-    .set-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: bold; }
-    .check-btn { background: #29292e; border: 1px solid var(--border); border-radius: 6px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-muted); }
-    .check-btn.checked { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    /* Estrutura de colunas alinhada e adaptável a telas menores */
+    .grid-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 1fr 44px;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .set-header {
+      margin-bottom: 6px;
+    }
+
+    .set-row {
+      margin-bottom: 8px;
+    }
+
+    .set-row input {
+      width: 100%;
+      min-width: 0;
+      background: #121214;
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 6px;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 16px; /* Evita o zoom automático da tela no iOS */
+      -webkit-appearance: none;
+    }
+
+    .set-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .check-btn {
+      width: 100%;
+      min-width: 0;
+      background: #29292e;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      height: 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+
+    .check-btn.checked {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
     .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #29292e; }
-    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
     .info-box { background: #1b2820; border: 1px solid #005f42; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.4; }
     .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
     .timer-display { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
@@ -126,7 +182,7 @@
             <span class="badge">${ex.series} séries × ${ex.reps} reps</span>
             <div class="card-title">${ex.nome}</div>
             <div class="details">${ex.desc}</div>
-            <div style="display: grid; grid-template-columns: 32px 1fr 1fr 36px; gap: 8px; margin-bottom: 4px;">
+            <div class="grid-row set-header">
               <span class="set-label">#</span>
               <span class="set-label">Kg</span>
               <span class="set-label">Reps</span>
@@ -143,10 +199,10 @@
           const isChecked = localStorage.getItem(keyCheck) === 'true';
 
           html += `
-            <div class="set-row">
+            <div class="grid-row set-row">
               <span class="set-label">${i}</span>
-              <input type="number" placeholder="kg" value="${savedW}" onchange="saveData('${keyWeight}', this.value)">
-              <input type="number" placeholder="reps" value="${savedR}" onchange="saveData('${keyReps}', this.value)">
+              <input type="number" inputmode="decimal" placeholder="kg" value="${savedW}" onchange="saveData('${keyWeight}', this.value)">
+              <input type="number" inputmode="numeric" placeholder="reps" value="${savedR}" onchange="saveData('${keyReps}', this.value)">
               <button class="check-btn ${isChecked ? 'checked' : ''}" onclick="toggleCheck('${keyCheck}', ${ex.rest}, this)">✓</button>
             </div>
           `;
@@ -193,7 +249,7 @@
         timerSeconds--;
         if (timerSeconds <= 0) {
           clearInterval(timerInterval);
-          navigator.vibrate && navigator.vibrate([200, 100, 200]);
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           stopTimer();
         } else {
           updateTimerUI();
