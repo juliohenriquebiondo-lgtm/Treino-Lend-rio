@@ -20,16 +20,48 @@
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
     header { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 16px; text-align: center; position: sticky; top: 0; z-index: 10; }
     header h1 { font-size: 1.25rem; font-weight: 700; }
+    
     .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
     .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    
     .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+
+    /* Barra de Progresso */
+    .progress-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #121214;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
     .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #fff; }
     .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: #29292e; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
     .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
-    /* Estrutura de colunas alinhada e adaptável a telas menores */
     .grid-row {
       display: grid;
       grid-template-columns: 28px 1fr 1fr 44px;
@@ -37,15 +69,8 @@
       align-items: center;
       width: 100%;
     }
-
-    .set-header {
-      margin-bottom: 6px;
-    }
-
-    .set-row {
-      margin-bottom: 8px;
-    }
-
+    .set-header { margin-bottom: 6px; }
+    .set-row { margin-bottom: 8px; }
     .set-row input {
       width: 100%;
       min-width: 0;
@@ -55,17 +80,11 @@
       border-radius: 6px;
       padding: 8px 4px;
       text-align: center;
-      font-size: 16px; /* Evita o zoom automático da tela no iOS */
+      font-size: 16px;
       -webkit-appearance: none;
     }
-
-    .set-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: center;
-      font-weight: bold;
-    }
-
+    .set-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: bold; }
+    
     .check-btn {
       width: 100%;
       min-width: 0;
@@ -82,16 +101,44 @@
       -webkit-tap-highlight-color: transparent;
       padding: 0;
     }
-
-    .check-btn.checked {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
+    .check-btn.checked { background: var(--primary); border-color: var(--primary); color: #fff; }
 
     .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #29292e; }
     .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
     .info-box { background: #1b2820; border: 1px solid #005f42; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.4; }
+
+    /* Botões de Ação Final */
+    .finish-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+      margin-bottom: 40px;
+    }
+    .btn-export {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
     .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
     .timer-display { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
     .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; }
@@ -104,9 +151,9 @@
   </header>
 
   <nav class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('treinoA')">Treino A (Push)</button>
-    <button class="tab-btn" onclick="switchTab('treinoB')">Treino B (Pull)</button>
-    <button class="tab-btn" onclick="switchTab('treinoC')">Treino C (Legs)</button>
+    <button class="tab-btn" data-tab="treinoA" onclick="switchTab('treinoA')">Treino A (Push)</button>
+    <button class="tab-btn" data-tab="treinoB" onclick="switchTab('treinoB')">Treino B (Pull)</button>
+    <button class="tab-btn" data-tab="treinoC" onclick="switchTab('treinoC')">Treino C (Legs)</button>
   </nav>
 
   <div class="container" id="content"></div>
@@ -161,7 +208,8 @@
       }
     };
 
-    let activeTab = 'treinoA';
+    // Recupera a última aba salva ou define Treino A como padrão
+    let activeTab = localStorage.getItem('activeTab') || 'treinoA';
     let timerInterval = null;
     let timerSeconds = 0;
 
@@ -169,7 +217,37 @@
       const data = treinos[activeTab];
       const container = document.getElementById('content');
       
+      // Atualizar classe ativa nas abas do cabeçalho
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
+      });
+
+      // Cálculo de séries concluídas vs total da aba
+      let totalSeries = 0;
+      let completedSeries = 0;
+
+      data.exercicios.forEach(ex => {
+        totalSeries += ex.series;
+        for (let i = 1; i <= ex.series; i++) {
+          if (localStorage.getItem(`${ex.id}_c_${i}`) === 'true') {
+            completedSeries++;
+          }
+        }
+      });
+
+      const percent = totalSeries > 0 ? Math.round((completedSeries / totalSeries) * 100) : 0;
+
       let html = `
+        <div class="progress-box">
+          <div class="progress-header">
+            <span>Progresso do Treino</span>
+            <span id="progressText">${completedSeries} / ${totalSeries} séries (${percent}%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: ${percent}%;"></div>
+          </div>
+        </div>
+
         <div class="info-box">
           <strong>Diretrizes:</strong> Cadência 3s excêntrica. 1 a 2 repetições em reserva (RIR 1-2), indo até a falha técnica apenas na última série.<br><br>
           <strong>Cardio:</strong> ${data.cardio}
@@ -217,13 +295,19 @@
         `;
       });
 
+      html += `
+        <div class="finish-section">
+          <button class="btn-export" onclick="exportWorkoutReport()">📥 Baixar Relatório do Treino (.txt)</button>
+          <button class="btn-reset" onclick="resetCurrentTabChecks()">Limpar 'Checks' deste Treino</button>
+        </div>
+      `;
+
       container.innerHTML = html;
     }
 
     function switchTab(tab) {
       activeTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      localStorage.setItem('activeTab', tab);
       render();
     }
 
@@ -236,7 +320,95 @@
       const next = !current;
       localStorage.setItem(key, next);
       btn.classList.toggle('checked', next);
+      
+      updateProgressOnly();
       if (next) startTimer(restTime);
+    }
+
+    function updateProgressOnly() {
+      const data = treinos[activeTab];
+      let totalSeries = 0;
+      let completedSeries = 0;
+
+      data.exercicios.forEach(ex => {
+        totalSeries += ex.series;
+        for (let i = 1; i <= ex.series; i++) {
+          if (localStorage.getItem(`${ex.id}_c_${i}`) === 'true') {
+            completedSeries++;
+          }
+        }
+      });
+
+      const percent = totalSeries > 0 ? Math.round((completedSeries / totalSeries) * 100) : 0;
+      const textElem = document.getElementById('progressText');
+      const barElem = document.getElementById('progressBarFill');
+
+      if (textElem && barElem) {
+        textElem.innerText = `${completedSeries} / ${totalSeries} séries (${percent}%)`;
+        barElem.style.width = `${percent}%`;
+      }
+    }
+
+    function exportWorkoutReport() {
+      const data = treinos[activeTab];
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('pt-BR');
+      const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      let report = `========================================\n`;
+      report += `RELATÓRIO DE TREINO\n`;
+      report += `${data.titulo}\n`;
+      report += `Data: ${dateStr} às ${timeStr}\n`;
+      report += `========================================\n\n`;
+
+      data.exercicios.forEach(ex => {
+        report += `EXERCÍCIO: ${ex.nome}\n`;
+        let seriesCount = 0;
+
+        for (let i = 1; i <= ex.series; i++) {
+          const w = localStorage.getItem(`${ex.id}_w_${i}`) || '-';
+          const r = localStorage.getItem(`${ex.id}_r_${i}`) || '-';
+          const checked = localStorage.getItem(`${ex.id}_c_${i}`) === 'true';
+
+          if (checked || w !== '-' || r !== '-') {
+            seriesCount++;
+            const status = checked ? '[CONCLUÍDO]' : '[NÃO MARCADO]';
+            report += `  Série ${i}: ${w} kg × ${r} reps ${status}\n`;
+          }
+        }
+
+        if (seriesCount === 0) {
+          report += `  (Nenhuma série registrada)\n`;
+        }
+        report += `\n`;
+      });
+
+      report += `========================================\n`;
+      report += `Cardio Recomendado: ${data.cardio}\n`;
+      report += `========================================\n`;
+
+      // Download do arquivo de texto
+      const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `treino_${activeTab}_${now.toISOString().slice(0,10)}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    }
+
+    function resetCurrentTabChecks() {
+      if (!confirm("Deseja desmarcar todos os 'checks' deste treino para o próximo dia? Suas últimas cargas e reps continuarão salvas.")) {
+        return;
+      }
+      const data = treinos[activeTab];
+      data.exercicios.forEach(ex => {
+        for (let i = 1; i <= ex.series; i++) {
+          localStorage.removeItem(`${ex.id}_c_${i}`);
+        }
+      });
+      render();
     }
 
     function startTimer(seconds) {
