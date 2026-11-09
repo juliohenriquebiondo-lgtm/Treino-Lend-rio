@@ -349,8 +349,14 @@
       }
     }
 
-    function exportWorkoutReport() {
-      const data = treinos[activeTab];
+ function exportWorkoutReport() {
+      // 1. Garante que pega a aba atualmente ativa na interface ou no localStorage
+      const activeBtn = document.querySelector('.tab-btn.active');
+      const currentTab = activeBtn ? activeBtn.getAttribute('data-tab') : (activeTab || 'treinoA');
+      
+      const data = treinos[currentTab];
+      if (!data) return;
+
       const now = new Date();
       const dateStr = now.toLocaleDateString('pt-BR');
       const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -391,7 +397,7 @@
       const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `treino_${activeTab}_${now.toISOString().slice(0,10)}.txt`;
+      link.download = `treino_${currentTab.replace('treino', '')}_${now.toISOString().slice(0,10)}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
