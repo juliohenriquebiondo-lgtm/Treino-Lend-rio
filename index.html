@@ -140,7 +140,6 @@
       box-shadow: 0 0 10px rgba(0, 179, 126, 0.5);
     }
 
-    /* Campo de Notas por Série */
     .note-input {
       width: 100%;
       background: #121214;
@@ -178,29 +177,31 @@
     
     .day-selector-card { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .day-select-row { display: flex; justify-content: space-between; align-items: center; background: #121214; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
-    .day-select-row select { background: #202024; color: #fff; border: 1px solid var(--border); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; }
+    .day-select-row select { background: #202024; color: #fff; border: 1px solid var(--border); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; max-width: 170px; }
 
     /* Grid do Mês */
-    .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-top: 10px; }
+    .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
     .month-header-cell { font-size: 0.75rem; color: var(--text-muted); font-weight: bold; padding-bottom: 4px; }
     .month-day-cell { 
       background: #121214; 
       border: 1px solid var(--border); 
       border-radius: 6px; 
-      padding: 8px 2px; 
-      min-height: 52px; 
+      padding: 6px 2px; 
+      min-height: 58px; 
       display: flex; 
       flex-direction: column; 
       justify-content: space-between; 
       align-items: center; 
-      font-size: 0.8rem; 
+      font-size: 0.75rem; 
     }
-    .month-day-cell .day-num { font-weight: bold; color: var(--text-muted); font-size: 0.75rem; }
-    .tag-badge { font-size: 0.65rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+    .month-day-cell .day-num { font-weight: bold; color: var(--text-muted); font-size: 0.7rem; }
+    .tag-badge { font-size: 0.55rem; padding: 1px 2px; border-radius: 3px; font-weight: bold; width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
     .badge-A { background: #005f42; color: #00b37e; }
     .badge-B { background: #1f3a5f; color: #35a7ff; }
     .badge-C { background: #5a3812; color: #fba94c; }
     .badge-Run { background: #5f1238; color: #f75a68; }
+    .badge-Treadmill { background: #38125f; color: #c084fc; }
+    .badge-Bike { background: #124c5f; color: #38bdf8; }
     .badge-Rest { background: #29292e; color: #8d8d99; }
 
     /* Ações Finais */
@@ -294,16 +295,24 @@
       { text: "Homens fortes não surgem de fáceis e confortáveis venturas; provações os forjam.", author: "Sêneca" }
     ];
 
+    const activityOptions = [
+      { value: "Descanso", label: "💤 Descanso", badge: "Desc", class: "badge-Rest" },
+      { value: "Treino A", label: "💪 Treino A (Push)", badge: "Push", class: "badge-A" },
+      { value: "Treino B", label: "🦾 Treino B (Pull)", badge: "Pull", class: "badge-B" },
+      { value: "Treino C", label: "🦵 Treino C (Legs)", badge: "Legs", class: "badge-C" },
+      { value: "Corrida Outdoor", label: "🏃 Corrida Outdoor", badge: "Run", class: "badge-Run" },
+      { value: "Cardio Esteira", label: "🚶 Cardio Esteira", badge: "Esteira", class: "badge-Treadmill" },
+      { value: "Cardio Bicicleta", label: "🚴 Cardio Bicicleta", badge: "Bike", class: "badge-Bike" }
+    ];
+
     let activeTab = localStorage.getItem('activeTab') || 'treinoA';
-    let calendarSubView = 'diario'; // 'diario' ou 'mes'
+    let calendarSubView = 'diario';
     let timerInterval = null;
     let timerSeconds = 0;
 
-    // Rotação automática da frase a cada 1 minuto
     let currentQuoteIndex = 0;
     function getRotatingQuote() {
-      const q = stoicQuotes[currentQuoteIndex];
-      return q;
+      return stoicQuotes[currentQuoteIndex];
     }
     setInterval(() => {
       currentQuoteIndex = (currentQuoteIndex + 1) % stoicQuotes.length;
@@ -429,10 +438,13 @@
       container.innerHTML = html;
     }
 
-    // Função para renderizar a 4ª aba (Agenda & Mês)
+    // Renderiza a 4ª aba com dois seletores independentes
     function renderCalendarTab(container) {
       const todayISO = new Date().toISOString().slice(0, 10);
       const selectedDate = localStorage.getItem('selectedCalendarDate') || todayISO;
+
+      const act1 = localStorage.getItem(`day_act1_${selectedDate}`) || 'Descanso';
+      const act2 = localStorage.getItem(`day_act2_${selectedDate}`) || '';
 
       let html = `
         <div class="calendar-container">
@@ -443,7 +455,20 @@
       `;
 
       if (calendarSubView === 'diario') {
-        const currentVal = localStorage.getItem(`day_status_${selectedDate}`) || 'Descanso';
+        // Opções para a Atividade 1 (todas)
+        let options1Html = '';
+        activityOptions.forEach(opt => {
+          options1Html += `<option value="${opt.value}" ${act1 === opt.value ? 'selected' : ''}>${opt.label}</option>`;
+        });
+
+        // Opções para a Atividade 2 (em branco + todas exceto a escolhida em act1)
+        let options2Html = `<option value="" ${act2 === '' ? 'selected' : ''}>-- Nenhuma / Apenas 1 Atividade --</option>`;
+        activityOptions.forEach(opt => {
+          if (opt.value !== act1) {
+            options2Html += `<option value="${opt.value}" ${act2 === opt.value ? 'selected' : ''}>${opt.label}</option>`;
+          }
+        });
+
         html += `
           <h3 style="font-size: 1rem; margin-bottom: 12px; color: #fff;">Registro de Atividade Diária</h3>
           <div class="day-selector-card">
@@ -452,22 +477,23 @@
               <input type="date" value="${selectedDate}" onchange="localStorage.setItem('selectedCalendarDate', this.value); render();" style="background:#202024; color:#fff; border:1px solid var(--border); padding:6px; border-radius:4px;">
             </div>
             <div class="day-select-row">
-              <span style="font-size: 0.85rem;">Status do Dia:</span>
-              <select onchange="localStorage.setItem('day_status_${selectedDate}', this.value); render();">
-                <option value="Descanso" ${currentVal === 'Descanso' ? 'selected' : ''}>💤 Descanso</option>
-                <option value="Treino A" ${currentVal === 'Treino A' ? 'selected' : ''}>💪 Treino A (Push)</option>
-                <option value="Treino B" ${currentVal === 'Treino B' ? 'selected' : ''}>🦾 Treino B (Pull)</option>
-                <option value="Treino C" ${currentVal === 'Treino C' ? 'selected' : ''}>🦵 Treino C (Legs)</option>
-                <option value="Corrida" ${currentVal === 'Corrida' ? 'selected' : ''}>🏃 Corrida Outdoor</option>
+              <span style="font-size: 0.85rem; font-weight: bold; color: var(--primary);">Atividade 1:</span>
+              <select onchange="localStorage.setItem('day_act1_${selectedDate}', this.value); if(localStorage.getItem('day_act2_${selectedDate}') === this.value) { localStorage.setItem('day_act2_${selectedDate}', ''); } render();">
+                ${options1Html}
+              </select>
+            </div>
+            <div class="day-select-row">
+              <span style="font-size: 0.85rem; font-weight: bold; color: var(--info);">Atividade 2 (Opcional):</span>
+              <select onchange="localStorage.setItem('day_act2_${selectedDate}', this.value); render();">
+                ${options2Html}
               </select>
             </div>
           </div>
           <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
-            Defina o que você realizou no dia. Essa marcação alimenta automaticamente a sua <strong>Visão Mensal</strong> para controle total da sua rotina semanal.
+            Você pode registrar uma única atividade ou combiná-las (ex: Treino A + Cardio Esteira). Tudo aparecerá perfeitamente na sua <strong>Visão Mensal</strong>.
           </p>
         `;
       } else {
-        // Visão Mensal Grid
         const now = new Date();
         const year = now.getFullYear();
         const month = now.getMonth();
@@ -478,7 +504,7 @@
 
         html += `
           <h3 style="font-size: 1rem; margin-bottom: 4px; color: #fff; text-transform: capitalize;">${monthName}</h3>
-          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">Resumo mensal de treinos e descanso</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">Resumo mensal de treinos, cardios e descanso</p>
           
           <div class="month-grid">
             <div class="month-header-cell">Dom</div>
@@ -498,19 +524,20 @@
           const dayStr = String(d).padStart(2, '0');
           const monthStr = String(month + 1).padStart(2, '0');
           const dateKey = `${year}-${monthStr}-${dayStr}`;
-          const status = localStorage.getItem(`day_status_${dateKey}`) || 'Descanso';
           
-          let badgeClass = 'badge-Rest';
-          let shortLabel = 'Desc';
-          if (status === 'Treino A') { badgeClass = 'badge-A'; shortLabel = 'Push'; }
-          else if (status === 'Treino B') { badgeClass = 'badge-B'; shortLabel = 'Pull'; }
-          else if (status === 'Treino C') { badgeClass = 'badge-C'; shortLabel = 'Legs'; }
-          else if (status === 'Corrida') { badgeClass = 'badge-Run'; shortLabel = 'Run'; }
+          const a1 = localStorage.getItem(`day_act1_${dateKey}`) || 'Descanso';
+          const a2 = localStorage.getItem(`day_act2_${dateKey}`) || '';
+
+          const opt1 = activityOptions.find(o => o.value === a1) || activityOptions[0];
+          const opt2 = activityOptions.find(o => o.value === a2);
 
           html += `
             <div class="month-day-cell" onclick="localStorage.setItem('selectedCalendarDate', '${dateKey}'); calendarSubView='diario'; render();" style="cursor:pointer;">
               <span class="day-num">${d}</span>
-              <span class="tag-badge ${badgeClass}">${shortLabel}</span>
+              <div style="width:100%; display:flex; flex-direction:column; gap:2px;">
+                <span class="tag-badge ${opt1.class}">${opt1.badge}</span>
+                ${opt2 ? `<span class="tag-badge ${opt2.class}">${opt2.badge}</span>` : ''}
+              </div>
             </div>
           `;
         }
@@ -527,7 +554,6 @@
       render();
     }
 
-    // Copiar carga da série anterior para agilizar
     function copyPreviousSet(exId, totalSeries) {
       for (let i = 2; i <= totalSeries; i++) {
         const prevW = localStorage.getItem(`${exId}_w_${i-1}`);
