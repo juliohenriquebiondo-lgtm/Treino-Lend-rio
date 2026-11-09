@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Acompanhamento de Treino</title>
+  <title>Acompanhamento de Treino Pro</title>
   <style>
     :root {
       --bg: #121214;
@@ -15,6 +15,7 @@
       --text-muted: #8d8d99;
       --accent: #fba94c;
       --danger: #f75a68;
+      --info: #35a7ff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
@@ -22,12 +23,12 @@
     header h1 { font-size: 1.25rem; font-weight: 700; }
     
     .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; transition: color 0.2s; }
+    .tab-btn { flex: 1; padding: 12px 14px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; transition: color 0.2s; }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     
     .container { max-width: 600px; margin: 0 auto; padding: 16px; }
 
-    /* Bloco de Citação Estoica / Filosófica */
+    /* Bloco de Citação Estoica (Muda a cada 1 min) */
     .stoic-box {
       background: linear-gradient(135deg, #1b2820 0%, #202024 100%);
       border: 1px solid #005f42;
@@ -48,7 +49,7 @@
       text-align: right;
     }
 
-    /* Barra de Progresso com Animação */
+    /* Barra de Progresso */
     .progress-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -64,13 +65,7 @@
       font-size: 0.85rem;
       font-weight: 600;
     }
-    .progress-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: #121214;
-      border-radius: 4px;
-      overflow: hidden;
-    }
+    .progress-bar-bg { width: 100%; height: 8px; background: #121214; border-radius: 4px; overflow: hidden; }
     .progress-bar-fill {
       height: 100%;
       background: var(--primary);
@@ -79,7 +74,6 @@
       box-shadow: 0 0 10px rgba(0, 179, 126, 0.4);
     }
 
-    /* Cards com Animações de Conclusão */
     .card { 
       background: var(--card-bg); 
       border-radius: 8px; 
@@ -93,19 +87,19 @@
       background: linear-gradient(180deg, #202024 0%, #16221d 100%);
     }
 
-    .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #fff; }
+    .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; color: #fff; }
     .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: #29292e; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
-    .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+    .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
 
     .grid-row {
       display: grid;
-      grid-template-columns: 28px 1fr 1fr 44px;
-      gap: 8px;
+      grid-template-columns: 24px 1fr 1fr 40px;
+      gap: 6px;
       align-items: center;
       width: 100%;
     }
     .set-header { margin-bottom: 6px; }
-    .set-row { margin-bottom: 8px; }
+    .set-row { margin-bottom: 6px; }
     .set-row input {
       width: 100%;
       min-width: 0;
@@ -115,29 +109,24 @@
       border-radius: 6px;
       padding: 8px 4px;
       text-align: center;
-      font-size: 16px;
+      font-size: 15px;
       -webkit-appearance: none;
-      transition: border-color 0.2s;
     }
-    .set-row input:focus {
-      border-color: var(--primary);
-      outline: none;
-    }
+    .set-row input:focus { border-color: var(--primary); outline: none; }
     .set-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: bold; }
     
-    /* Botão de Check com Animação de Pulso */
     .check-btn {
       width: 100%;
       min-width: 0;
       background: #29292e;
       border: 1px solid var(--border);
       border-radius: 6px;
-      height: 38px;
+      height: 36px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--text-muted);
       -webkit-tap-highlight-color: transparent;
       padding: 0;
@@ -148,53 +137,82 @@
       border-color: var(--primary); 
       color: #fff; 
       transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(0, 179, 126, 0.5);
+      box-shadow: 0 0 10px rgba(0, 179, 126, 0.5);
     }
+
+    /* Campo de Notas por Série */
+    .note-input {
+      width: 100%;
+      background: #121214;
+      border: 1px dashed var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    .note-input:focus { border-color: var(--accent); outline: none; }
 
     .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #29292e; }
-    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .rest-btn, .copy-btn { 
+      background: transparent; 
+      border: 1px solid var(--primary); 
+      color: var(--primary); 
+      padding: 5px 10px; 
+      border-radius: 4px; 
+      font-size: 0.75rem; 
+      cursor: pointer; 
+      transition: background 0.2s, color 0.2s; 
+    }
+    .copy-btn { border-color: var(--info); color: var(--info); margin-right: auto; margin-left: 8px; }
     .rest-btn:hover { background: var(--primary); color: #fff; }
+    .copy-btn:hover { background: var(--info); color: #fff; }
+
     .info-box { background: #1b2820; border: 1px solid #005f42; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.4; }
 
-    /* Botões de Ação Final */
-    .finish-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 24px;
-      margin-bottom: 40px;
+    /* Estilos da Aba de Calendário / Mês */
+    .calendar-container { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+    .sub-nav { display: flex; gap: 8px; margin-bottom: 16px; }
+    .sub-btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: #121214; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .sub-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    
+    .day-selector-card { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .day-select-row { display: flex; justify-content: space-between; align-items: center; background: #121214; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
+    .day-select-row select { background: #202024; color: #fff; border: 1px solid var(--border); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+    /* Grid do Mês */
+    .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-top: 10px; }
+    .month-header-cell { font-size: 0.75rem; color: var(--text-muted); font-weight: bold; padding-bottom: 4px; }
+    .month-day-cell { 
+      background: #121214; 
+      border: 1px solid var(--border); 
+      border-radius: 6px; 
+      padding: 8px 2px; 
+      min-height: 52px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between; 
+      align-items: center; 
+      font-size: 0.8rem; 
     }
-    .btn-export {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 14px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.2s;
-    }
+    .month-day-cell .day-num { font-weight: bold; color: var(--text-muted); font-size: 0.75rem; }
+    .tag-badge { font-size: 0.65rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+    .badge-A { background: #005f42; color: #00b37e; }
+    .badge-B { background: #1f3a5f; color: #35a7ff; }
+    .badge-C { background: #5a3812; color: #fba94c; }
+    .badge-Run { background: #5f1238; color: #f75a68; }
+    .badge-Rest { background: #29292e; color: #8d8d99; }
+
+    /* Ações Finais */
+    .finish-section { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; margin-bottom: 40px; }
+    .btn-export { background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 6px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
     .btn-export:hover { background: var(--primary-hover); }
-    .btn-reset {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-    }
+    .btn-reset { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
     .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
 
     .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; animation: slideUp 0.3s ease; }
     .timer-display { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
-    .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
+    .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -203,13 +221,14 @@
 <body>
 
   <header>
-    <h1>Acompanhamento de Treino</h1>
+    <h1>Acompanhamento de Treino Pro</h1>
   </header>
 
   <nav class="nav-tabs">
-    <button class="tab-btn" data-tab="treinoA" onclick="switchTab('treinoA')">Treino A (Push)</button>
-    <button class="tab-btn" data-tab="treinoB" onclick="switchTab('treinoB')">Treino B (Pull)</button>
-    <button class="tab-btn" data-tab="treinoC" onclick="switchTab('treinoC')">Treino C (Legs)</button>
+    <button class="tab-btn" data-tab="treinoA" onclick="switchTab('treinoA')">Treino A</button>
+    <button class="tab-btn" data-tab="treinoB" onclick="switchTab('treinoB')">Treino B</button>
+    <button class="tab-btn" data-tab="treinoC" onclick="switchTab('treinoC')">Treino C</button>
+    <button class="tab-btn" data-tab="calendario" onclick="switchTab('calendario')">📅 Agenda & Mês</button>
   </nav>
 
   <div class="container" id="content"></div>
@@ -264,34 +283,50 @@
       }
     };
 
-    // Banco de frases filosóficas estoicas
     const stoicQuotes = [
       { text: "Nenhum homem é mais livre do que aquele que tem o poder sobre si mesmo.", author: "Sêneca" },
       { text: "A alma torna-se tingida com a cor dos seus pensamentos.", author: "Marco Aurélio" },
       { text: "Primeiro diga a si mesmo o que você gostaria de ser; depois faça o que tem a fazer.", author: "Epicteto" },
       { text: "Sofremos mais na imaginação do que na realidade.", author: "Sêneca" },
       { text: "Não espere pelas circunstâncias ideais, pois elas nunca chegam. Comece com o que tem.", author: "Platão" },
-      { text: "A felicidade da sua vida depende da qualidade dos seus pensamentos.", author: "Marco Aurélio" }
+      { text: "A felicidade da sua vida depende da qualidade dos seus pensamentos.", author: "Marco Aurélio" },
+      { text: "A dificuldade convida o homem a provar o seu valor.", author: "Epicteto" },
+      { text: "Homens fortes não surgem de fáceis e confortáveis venturas; provações os forjam.", author: "Sêneca" }
     ];
 
     let activeTab = localStorage.getItem('activeTab') || 'treinoA';
+    let calendarSubView = 'diario'; // 'diario' ou 'mes'
     let timerInterval = null;
     let timerSeconds = 0;
 
-    // Seleciona uma frase baseada no dia para variar sem mudar toda hora
-    function getDailyQuote() {
-      const dayIndex = new Date().getDate() % stoicQuotes.length;
-      return stoicQuotes[dayIndex];
+    // Rotação automática da frase a cada 1 minuto
+    let currentQuoteIndex = 0;
+    function getRotatingQuote() {
+      const q = stoicQuotes[currentQuoteIndex];
+      return q;
     }
+    setInterval(() => {
+      currentQuoteIndex = (currentQuoteIndex + 1) % stoicQuotes.length;
+      const box = document.getElementById('stoicQuoteContainer');
+      if (box) {
+        const quote = stoicQuotes[currentQuoteIndex];
+        box.innerHTML = `"${quote.text}"<span>— ${quote.author}</span>`;
+      }
+    }, 60000);
 
     function render() {
-      const data = treinos[activeTab];
       const container = document.getElementById('content');
-      const quote = getDailyQuote();
-      
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
       });
+
+      if (activeTab === 'calendario') {
+        renderCalendarTab(container);
+        return;
+      }
+
+      const data = treinos[activeTab];
+      const quote = getRotatingQuote();
 
       let totalSeries = 0;
       let completedSeries = 0;
@@ -308,7 +343,7 @@
       const percent = totalSeries > 0 ? Math.round((completedSeries / totalSeries) * 100) : 0;
 
       let html = `
-        <div class="stoic-box">
+        <div class="stoic-box" id="stoicQuoteContainer">
           "${quote.text}"
           <span>— ${quote.author}</span>
         </div>
@@ -330,7 +365,6 @@
       `;
 
       data.exercicios.forEach(ex => {
-        // Verifica se todas as séries deste exercício específico estão completas
         let exCompletedCount = 0;
         for (let i = 1; i <= ex.series; i++) {
           if (localStorage.getItem(`${ex.id}_c_${i}`) === 'true') {
@@ -344,6 +378,7 @@
             <span class="badge">${ex.series} séries × ${ex.reps} reps</span>
             <div class="card-title">${ex.nome}</div>
             <div class="details">${ex.desc}</div>
+            
             <div class="grid-row set-header">
               <span class="set-label">#</span>
               <span class="set-label">Kg</span>
@@ -356,8 +391,11 @@
           const keyWeight = `${ex.id}_w_${i}`;
           const keyReps = `${ex.id}_r_${i}`;
           const keyCheck = `${ex.id}_c_${i}`;
+          const keyNote = `${ex.id}_n_${i}`;
+
           const savedW = localStorage.getItem(keyWeight) || '';
           const savedR = localStorage.getItem(keyReps) || '';
+          const savedN = localStorage.getItem(keyNote) || '';
           const isChecked = localStorage.getItem(keyCheck) === 'true';
 
           html += `
@@ -367,12 +405,14 @@
               <input type="number" inputmode="numeric" placeholder="reps" value="${savedR}" onchange="saveData('${keyReps}', this.value)">
               <button class="check-btn ${isChecked ? 'checked' : ''}" onclick="toggleCheck('${keyCheck}', ${ex.rest}, this)">✓</button>
             </div>
+            <input type="text" class="note-input" placeholder="Nota da série (ex: falha na 8ª rep)..." value="${savedN}" onchange="saveData('${keyNote}', this.value)">
           `;
         }
 
         html += `
             <div class="card-actions">
               <span style="font-size: 0.8rem; color: var(--text-muted);">Descanso: ${ex.rest}s</span>
+              <button class="copy-btn" onclick="copyPreviousSet('${ex.id}', ${ex.series})">Copiar Anterior</button>
               <button class="rest-btn" onclick="startTimer(${ex.rest})">Iniciar Descanso (${ex.rest}s)</button>
             </div>
           </div>
@@ -389,6 +429,120 @@
       container.innerHTML = html;
     }
 
+    // Função para renderizar a 4ª aba (Agenda & Mês)
+    function renderCalendarTab(container) {
+      const todayISO = new Date().toISOString().slice(0, 10);
+      const selectedDate = localStorage.getItem('selectedCalendarDate') || todayISO;
+
+      let html = `
+        <div class="calendar-container">
+          <div class="sub-nav">
+            <button class="sub-btn ${calendarSubView === 'diario' ? 'active' : ''}" onclick="setCalendarSubView('diario')">Registro Diário</button>
+            <button class="sub-btn ${calendarSubView === 'mes' ? 'active' : ''}" onclick="setCalendarSubView('mes')">Visão Mensal</button>
+          </div>
+      `;
+
+      if (calendarSubView === 'diario') {
+        const currentVal = localStorage.getItem(`day_status_${selectedDate}`) || 'Descanso';
+        html += `
+          <h3 style="font-size: 1rem; margin-bottom: 12px; color: #fff;">Registro de Atividade Diária</h3>
+          <div class="day-selector-card">
+            <div class="day-select-row">
+              <span style="font-size: 0.85rem;">Escolha a Data:</span>
+              <input type="date" value="${selectedDate}" onchange="localStorage.setItem('selectedCalendarDate', this.value); render();" style="background:#202024; color:#fff; border:1px solid var(--border); padding:6px; border-radius:4px;">
+            </div>
+            <div class="day-select-row">
+              <span style="font-size: 0.85rem;">Status do Dia:</span>
+              <select onchange="localStorage.setItem('day_status_${selectedDate}', this.value); render();">
+                <option value="Descanso" ${currentVal === 'Descanso' ? 'selected' : ''}>💤 Descanso</option>
+                <option value="Treino A" ${currentVal === 'Treino A' ? 'selected' : ''}>💪 Treino A (Push)</option>
+                <option value="Treino B" ${currentVal === 'Treino B' ? 'selected' : ''}>🦾 Treino B (Pull)</option>
+                <option value="Treino C" ${currentVal === 'Treino C' ? 'selected' : ''}>🦵 Treino C (Legs)</option>
+                <option value="Corrida" ${currentVal === 'Corrida' ? 'selected' : ''}>🏃 Corrida Outdoor</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+            Defina o que você realizou no dia. Essa marcação alimenta automaticamente a sua <strong>Visão Mensal</strong> para controle total da sua rotina semanal.
+          </p>
+        `;
+      } else {
+        // Visão Mensal Grid
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const monthName = now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+        
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const totalDays = new Date(year, month + 1, 0).getDate();
+
+        html += `
+          <h3 style="font-size: 1rem; margin-bottom: 4px; color: #fff; text-transform: capitalize;">${monthName}</h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">Resumo mensal de treinos e descanso</p>
+          
+          <div class="month-grid">
+            <div class="month-header-cell">Dom</div>
+            <div class="month-header-cell">Seg</div>
+            <div class="month-header-cell">Ter</div>
+            <div class="month-header-cell">Qua</div>
+            <div class="month-header-cell">Qui</div>
+            <div class="month-header-cell">Sex</div>
+            <div class="month-header-cell">Sáb</div>
+        `;
+
+        for (let i = 0; i < firstDayIndex; i++) {
+          html += `<div class="month-day-cell" style="opacity: 0.2;"></div>`;
+        }
+
+        for (let d = 1; d <= totalDays; d++) {
+          const dayStr = String(d).padStart(2, '0');
+          const monthStr = String(month + 1).padStart(2, '0');
+          const dateKey = `${year}-${monthStr}-${dayStr}`;
+          const status = localStorage.getItem(`day_status_${dateKey}`) || 'Descanso';
+          
+          let badgeClass = 'badge-Rest';
+          let shortLabel = 'Desc';
+          if (status === 'Treino A') { badgeClass = 'badge-A'; shortLabel = 'Push'; }
+          else if (status === 'Treino B') { badgeClass = 'badge-B'; shortLabel = 'Pull'; }
+          else if (status === 'Treino C') { badgeClass = 'badge-C'; shortLabel = 'Legs'; }
+          else if (status === 'Corrida') { badgeClass = 'badge-Run'; shortLabel = 'Run'; }
+
+          html += `
+            <div class="month-day-cell" onclick="localStorage.setItem('selectedCalendarDate', '${dateKey}'); calendarSubView='diario'; render();" style="cursor:pointer;">
+              <span class="day-num">${d}</span>
+              <span class="tag-badge ${badgeClass}">${shortLabel}</span>
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function setCalendarSubView(sub) {
+      calendarSubView = sub;
+      render();
+    }
+
+    // Copiar carga da série anterior para agilizar
+    function copyPreviousSet(exId, totalSeries) {
+      for (let i = 2; i <= totalSeries; i++) {
+        const prevW = localStorage.getItem(`${exId}_w_${i-1}`);
+        const prevR = localStorage.getItem(`${exId}_r_${i-1}`);
+        const currW = localStorage.getItem(`${exId}_w_${i}`);
+        const currR = localStorage.getItem(`${exId}_r_${i}`);
+
+        if ((!currW || !currR) && prevW) {
+          if (prevW && !currW) localStorage.setItem(`${exId}_w_${i}`, prevW);
+          if (prevR && !currR) localStorage.setItem(`${exId}_r_${i}`, prevR);
+        }
+      }
+      render();
+    }
+
     function switchTab(tab) {
       activeTab = tab;
       localStorage.setItem('activeTab', tab);
@@ -403,17 +557,18 @@
       const current = localStorage.getItem(key) === 'true';
       const next = !current;
       localStorage.setItem(key, next);
-      
-      // Atualiza o estado visual do botão com animação e re-renderiza para atualizar o card
       btn.classList.toggle('checked', next);
-      
       render();
       if (next) startTimer(restTime);
     }
 
     function exportWorkoutReport() {
       const activeBtn = document.querySelector('.tab-btn.active');
-      const currentTab = activeBtn ? activeBtn.getAttribute('data-tab') : (activeTab || 'treinoA');
+      const currentTab = activeTab;
+      if (currentTab === 'calendario') {
+        alert("Selecione uma aba de treino (A, B ou C) para exportar o relatório do treino.");
+        return;
+      }
       
       const data = treinos[currentTab];
       if (!data) return;
@@ -435,12 +590,14 @@
         for (let i = 1; i <= ex.series; i++) {
           const w = localStorage.getItem(`${ex.id}_w_${i}`) || '-';
           const r = localStorage.getItem(`${ex.id}_r_${i}`) || '-';
+          const n = localStorage.getItem(`${ex.id}_n_${i}`) || '';
           const checked = localStorage.getItem(`${ex.id}_c_${i}`) === 'true';
 
-          if (checked || w !== '-' || r !== '-') {
+          if (checked || w !== '-' || r !== '-' || n !== '') {
             seriesCount++;
             const status = checked ? '[CONCLUÍDO]' : '[NÃO MARCADO]';
             report += `  Série ${i}: ${w} kg × ${r} reps ${status}\n`;
+            if (n) report += `    Obs: ${n}\n`;
           }
         }
 
@@ -465,10 +622,11 @@
     }
 
     function resetCurrentTabChecks() {
-      if (!confirm("Deseja desmarcar todos os 'checks' deste treino para o próximo dia? Suas últimas cargas e reps continuarão salvas.")) {
+      if (!confirm("Deseja desmarcar todos os 'checks' deste treino para o próximo dia? Suas cargas e notas continuarão salvas.")) {
         return;
       }
       const data = treinos[activeTab];
+      if (!data) return;
       data.exercicios.forEach(ex => {
         for (let i = 1; i <= ex.series; i++) {
           localStorage.removeItem(`${ex.id}_c_${i}`);
@@ -494,8 +652,6 @@
         }
       }, 1000);
     }
-
-    fn = { addTime: function(secs) { timerSeconds += secs; updateTimerUI(); } };
 
     function addTime(secs) {
       timerSeconds += secs;
