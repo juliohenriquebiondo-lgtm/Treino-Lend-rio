@@ -438,7 +438,6 @@
       container.innerHTML = html;
     }
 
-    // Renderiza a 4ª aba com dois seletores independentes
     function renderCalendarTab(container) {
       const todayISO = new Date().toISOString().slice(0, 10);
       const selectedDate = localStorage.getItem('selectedCalendarDate') || todayISO;
@@ -455,13 +454,11 @@
       `;
 
       if (calendarSubView === 'diario') {
-        // Opções para a Atividade 1 (todas)
         let options1Html = '';
         activityOptions.forEach(opt => {
           options1Html += `<option value="${opt.value}" ${act1 === opt.value ? 'selected' : ''}>${opt.label}</option>`;
         });
 
-        // Opções para a Atividade 2 (em branco + todas exceto a escolhida em act1)
         let options2Html = `<option value="" ${act2 === '' ? 'selected' : ''}>-- Nenhuma / Apenas 1 Atividade --</option>`;
         activityOptions.forEach(opt => {
           if (opt.value !== act1) {
@@ -543,6 +540,13 @@
         }
 
         html += `</div>`;
+
+        // Botão de Exportação Mensal na Visão Mensal
+        html += `
+          <div class="finish-section" style="margin-top: 20px;">
+            <button class="btn-export" onclick="exportMonthlyReport()">📥 Exportar Resumo do Mês (.txt)</button>
+          </div>
+        `;
       }
 
       html += `</div>`;
@@ -552,6 +556,69 @@
     function setCalendarSubView(sub) {
       calendarSubView = sub;
       render();
+    }
+
+    // Função de Exportação do Mês
+    function exportMonthlyReport() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const monthName = now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      let report = `========================================\n`;
+      report += `RESUMO MENSAL DE ATIVIDADES\n`;
+      report += `Mês: ${monthName.toUpperCase()}\n`;
+      report += `========================================\n\n`;
+
+      let counts = {
+        'Treino A': 0,
+        'Treino B': 0,
+        'Treino C': 0,
+        'Corrida Outdoor': 0,
+        'Cardio Esteira': 0,
+        'Cardio Bicicleta': 0,
+        'Descanso': 0
+      };
+
+      let dayLogs = [];
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dayStr = String(d).padStart(2, '0');
+        const monthStr = String(month + 1).padStart(2, '0');
+        const dateKey = `${year}-${monthStr}-${dayStr}`;
+
+        const a1 = localStorage.getItem(`day_act1_${dateKey}`) || 'Descanso';
+        const a2 = localStorage.getItem(`day_act2_${dateKey}`) || '';
+
+        if (counts[a1] !== undefined) counts[a1]++;
+        if (a2 && counts[a2] !== undefined) counts[a2]++;
+
+        const comboText = a2 ? `${a1} + ${a2}` : a1;
+        dayLogs.push(`  Dia ${dayStr}/${monthStr}: ${comboText}`);
+      }
+
+      const totalMusculacao = counts['Treino A'] + counts['Treino B'] + counts['Treino C'];
+      const totalCardio = counts['Corrida Outdoor'] + counts['Cardio Esteira'] + counts['Cardio Bicicleta'];
+
+      report += `--- PLACAR DE CONSISTÊNCIA MENSAL ---\n`;
+      report += `  • Musculação Total: ${totalMusculacao} sessões (Push: ${counts['Treino A']}, Pull: ${counts['Treino B']}, Legs: ${counts['Treino C']})\n`;
+      report += `  • Cardios Totais: ${totalCardio} sessões (Corrida: ${counts['Corrida Outdoor']}, Esteira: ${counts['Cardio Esteira']}, Bike: ${counts['Cardio Bicicleta']})\n`;
+      report += `  • Dias de Descanso: ${counts['Descanso']}\n`;
+      report += `========================================\n\n`;
+
+      report += `--- HISTÓRICO DIA A DIA ---\n`;
+      report += dayLogs.join('\n');
+      report += `\n\n========================================\n`;
+
+      const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `resumo_mensal_${year}-${String(month+1).padStart(2,'0')}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
     }
 
     function copyPreviousSet(exId, totalSeries) {
