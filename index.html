@@ -22,12 +22,33 @@
     header h1 { font-size: 1.25rem; font-weight: 700; }
     
     .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; }
+    .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; -webkit-tap-highlight-color: transparent; transition: color 0.2s; }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     
     .container { max-width: 600px; margin: 0 auto; padding: 16px; }
 
-    /* Barra de Progresso */
+    /* Bloco de Citação Estoica / Filosófica */
+    .stoic-box {
+      background: linear-gradient(135deg, #1b2820 0%, #202024 100%);
+      border: 1px solid #005f42;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--accent);
+      animation: fadeIn 0.5s ease;
+    }
+    .stoic-box span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: right;
+    }
+
+    /* Barra de Progresso com Animação */
     .progress-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -54,10 +75,24 @@
       height: 100%;
       background: var(--primary);
       width: 0%;
-      transition: width 0.3s ease;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(0, 179, 126, 0.4);
     }
 
-    .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+    /* Cards com Animações de Conclusão */
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 8px; 
+      border: 1px solid var(--border); 
+      padding: 16px; 
+      margin-bottom: 16px; 
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+    .card.completed-card {
+      border-color: rgba(0, 179, 126, 0.4);
+      background: linear-gradient(180deg, #202024 0%, #16221d 100%);
+    }
+
     .card-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #fff; }
     .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: #29292e; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
     .details { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
@@ -82,9 +117,15 @@
       text-align: center;
       font-size: 16px;
       -webkit-appearance: none;
+      transition: border-color 0.2s;
+    }
+    .set-row input:focus {
+      border-color: var(--primary);
+      outline: none;
     }
     .set-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: bold; }
     
+    /* Botão de Check com Animação de Pulso */
     .check-btn {
       width: 100%;
       min-width: 0;
@@ -100,11 +141,19 @@
       color: var(--text-muted);
       -webkit-tap-highlight-color: transparent;
       padding: 0;
+      transition: all 0.25s ease;
     }
-    .check-btn.checked { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .check-btn.checked { 
+      background: var(--primary); 
+      border-color: var(--primary); 
+      color: #fff; 
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(0, 179, 126, 0.5);
+    }
 
     .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #29292e; }
-    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+    .rest-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .rest-btn:hover { background: var(--primary); color: #fff; }
     .info-box { background: #1b2820; border: 1px solid #005f42; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.4; }
 
     /* Botões de Ação Final */
@@ -128,7 +177,9 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: background 0.2s;
     }
+    .btn-export:hover { background: var(--primary-hover); }
     .btn-reset {
       background: transparent;
       border: 1px solid var(--border);
@@ -137,11 +188,16 @@
       border-radius: 6px;
       font-size: 0.85rem;
       cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
     }
+    .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-    .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+    .timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 2px solid var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; animation: slideUp 0.3s ease; }
     .timer-display { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
-    .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; }
+    .timer-controls button { background: var(--border); border: none; color: #fff; padding: 6px 12px; border-radius: 4px; margin-left: 6px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -208,21 +264,35 @@
       }
     };
 
-    // Recupera a última aba salva ou define Treino A como padrão
+    // Banco de frases filosóficas estoicas
+    const stoicQuotes = [
+      { text: "Nenhum homem é mais livre do que aquele que tem o poder sobre si mesmo.", author: "Sêneca" },
+      { text: "A alma torna-se tingida com a cor dos seus pensamentos.", author: "Marco Aurélio" },
+      { text: "Primeiro diga a si mesmo o que você gostaria de ser; depois faça o que tem a fazer.", author: "Epicteto" },
+      { text: "Sofremos mais na imaginação do que na realidade.", author: "Sêneca" },
+      { text: "Não espere pelas circunstâncias ideais, pois elas nunca chegam. Comece com o que tem.", author: "Platão" },
+      { text: "A felicidade da sua vida depende da qualidade dos seus pensamentos.", author: "Marco Aurélio" }
+    ];
+
     let activeTab = localStorage.getItem('activeTab') || 'treinoA';
     let timerInterval = null;
     let timerSeconds = 0;
 
+    // Seleciona uma frase baseada no dia para variar sem mudar toda hora
+    function getDailyQuote() {
+      const dayIndex = new Date().getDate() % stoicQuotes.length;
+      return stoicQuotes[dayIndex];
+    }
+
     function render() {
       const data = treinos[activeTab];
       const container = document.getElementById('content');
+      const quote = getDailyQuote();
       
-      // Atualizar classe ativa nas abas do cabeçalho
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
       });
 
-      // Cálculo de séries concluídas vs total da aba
       let totalSeries = 0;
       let completedSeries = 0;
 
@@ -238,6 +308,11 @@
       const percent = totalSeries > 0 ? Math.round((completedSeries / totalSeries) * 100) : 0;
 
       let html = `
+        <div class="stoic-box">
+          "${quote.text}"
+          <span>— ${quote.author}</span>
+        </div>
+
         <div class="progress-box">
           <div class="progress-header">
             <span>Progresso do Treino</span>
@@ -255,8 +330,17 @@
       `;
 
       data.exercicios.forEach(ex => {
+        // Verifica se todas as séries deste exercício específico estão completas
+        let exCompletedCount = 0;
+        for (let i = 1; i <= ex.series; i++) {
+          if (localStorage.getItem(`${ex.id}_c_${i}`) === 'true') {
+            exCompletedCount++;
+          }
+        }
+        const isExFinished = exCompletedCount === ex.series;
+
         html += `
-          <div class="card">
+          <div class="card ${isExFinished ? 'completed-card' : ''}">
             <span class="badge">${ex.series} séries × ${ex.reps} reps</span>
             <div class="card-title">${ex.nome}</div>
             <div class="details">${ex.desc}</div>
@@ -319,38 +403,15 @@
       const current = localStorage.getItem(key) === 'true';
       const next = !current;
       localStorage.setItem(key, next);
+      
+      // Atualiza o estado visual do botão com animação e re-renderiza para atualizar o card
       btn.classList.toggle('checked', next);
       
-      updateProgressOnly();
+      render();
       if (next) startTimer(restTime);
     }
 
-    function updateProgressOnly() {
-      const data = treinos[activeTab];
-      let totalSeries = 0;
-      let completedSeries = 0;
-
-      data.exercicios.forEach(ex => {
-        totalSeries += ex.series;
-        for (let i = 1; i <= ex.series; i++) {
-          if (localStorage.getItem(`${ex.id}_c_${i}`) === 'true') {
-            completedSeries++;
-          }
-        }
-      });
-
-      const percent = totalSeries > 0 ? Math.round((completedSeries / totalSeries) * 100) : 0;
-      const textElem = document.getElementById('progressText');
-      const barElem = document.getElementById('progressBarFill');
-
-      if (textElem && barElem) {
-        textElem.innerText = `${completedSeries} / ${totalSeries} séries (${percent}%)`;
-        barElem.style.width = `${percent}%`;
-      }
-    }
-
- function exportWorkoutReport() {
-      // 1. Garante que pega a aba atualmente ativa na interface ou no localStorage
+    function exportWorkoutReport() {
       const activeBtn = document.querySelector('.tab-btn.active');
       const currentTab = activeBtn ? activeBtn.getAttribute('data-tab') : (activeTab || 'treinoA');
       
@@ -393,7 +454,6 @@
       report += `Cardio Recomendado: ${data.cardio}\n`;
       report += `========================================\n`;
 
-      // Download do arquivo de texto
       const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -434,6 +494,8 @@
         }
       }, 1000);
     }
+
+    fn = { addTime: function(secs) { timerSeconds += secs; updateTimerUI(); } };
 
     function addTime(secs) {
       timerSeconds += secs;
